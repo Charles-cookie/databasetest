@@ -59,8 +59,10 @@ def update_it(win):
     root = Toplevel(win)
     root.title("change_info")
     root.geometry("600x400+190+190")
-    Label(root, text="{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}".format(
-        "学生编号", "专业", "姓名", "学院", "性别", "出生日期")).grid(row=0, column=0, columnspan=2,
+    Label(root, text="{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}\n"
+                     "{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}".format(
+        "学生编号", "专业", "姓名", "学院", "性别", "出生日期",
+        "(sId)","(major)","(name)","(dept)","(gender)","(birthday)")).grid(row=0, column=0, columnspan=2,
                                                       pady=9, padx=10, sticky="w")
     rels = person_info()
     i = 1
@@ -99,6 +101,26 @@ def insert_course(e):
         tkinter.messagebox.showinfo("unsuccessful", "插入失败" + str(e))
         db.rollback()
     db.close()
+
+
+#学生删除课程
+def stu_drop(_cid):
+    try:
+        db=pymysql.connect(host=host,
+                            user=user,
+                            password=password,
+                            database=dbname, )
+        cur=db.cursor()
+        sql="delete from sc where sc.sid='{}' AND sc.cid='{}'"
+        cur.execute(sql.format(uid,_cid))
+        db.commit()
+        tkinter.messagebox.showinfo("successful", "退课成功")
+    except pymysql.Error as e:
+        tkinter.messagebox.showinfo("unsuccessful", "退课失败" + str(e))
+        db.rollback()
+    db.close()
+
+
 
 #获取所有课程信息
 def cour_all():
@@ -175,6 +197,11 @@ def stu_course(win):
             "{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}".format(
                 rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7], rel[8]))
         Label(root, text=s1).pack(padx=15, pady=14, anchor="nw")
+    Label(root, text="如需退请输入课程ID：").pack(
+        padx=30, pady=8, anchor="w")
+    text1 = Entry(root)
+    text1.pack(padx=30, pady=0, anchor="w")
+    Button(root, text=" 退课 ", command=lambda: stu_drop(text1.get())).pack(anchor="w",padx=30,pady=10)
 
 #更新老师信息
 def updateT_info(text, e):
@@ -221,9 +248,11 @@ def updateT_it(win):
     root = Toplevel(win)
     root.title("change_info")
     root.geometry("700x400+190+190")
-    Label(root, text="{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}".format(
-        "教师编号", "教师名称", "毕业院校", "职称", "学历", "出生日期", "性别")).grid(row=0, column=0, columnspan=2,
-                                                                pady=20, padx=20, sticky="w")
+    Label(root, text="{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}\n"
+                     "{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}".format(
+        "教师编号", "教师名称", "毕业院校", "职称", "学历", "出生日期", "性别",
+                "(tId)","(tname)","(university)","     (tTitle)","    (edubg)","    (birthday)","     (gender)"#神奇对齐
+        )).grid(row=0, column=0, columnspan=2,pady=20, padx=20, sticky="w")
     rels = personT_info()
     i = 1
     for rel in rels:
