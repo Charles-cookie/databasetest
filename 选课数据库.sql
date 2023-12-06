@@ -62,7 +62,7 @@ DROP TABLE IF EXISTS `classroom_arr`;
 CREATE TABLE `classroom_arr`  (
   `crId` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `cId` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
-  `cTime` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `cTime` varchar(40) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   PRIMARY KEY (`crId`, `cId`) USING BTREE,
   INDEX `cId`(`cId`) USING BTREE,
   CONSTRAINT `classroom_arr_ibfk_1` FOREIGN KEY (`crId`) REFERENCES `classroom` (`crId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
@@ -72,12 +72,12 @@ CREATE TABLE `classroom_arr`  (
 -- ----------------------------
 -- Records of classroom_arr
 -- ----------------------------
-INSERT INTO `classroom_arr` VALUES ('1', '3', '周一1-2，周三7-8');
-INSERT INTO `classroom_arr` VALUES ('100', '100', '周三1-2，周五3-4');
-INSERT INTO `classroom_arr` VALUES ('2', '5', '周一3-4，周三5-6');
-INSERT INTO `classroom_arr` VALUES ('3', '4', '周二1-2，周四7-8');
-INSERT INTO `classroom_arr` VALUES ('4', '1', '周一7-8，周三3-4');
-INSERT INTO `classroom_arr` VALUES ('5', '2', '周三1-2，周五3-4');
+INSERT INTO `classroom_arr` VALUES ('1', '3', 'Monday1-2 Wednesday7-8');
+INSERT INTO `classroom_arr` VALUES ('100', '100', 'Wednesday1-2 Friday3-4');
+INSERT INTO `classroom_arr` VALUES ('2', '5', 'Monday3-4 Wednesday5-6');
+INSERT INTO `classroom_arr` VALUES ('3', '4', 'Monday1-2 Thursday7-8');
+INSERT INTO `classroom_arr` VALUES ('4', '1', 'Monday7-8 Wednesday3-4');
+INSERT INTO `classroom_arr` VALUES ('5', '2', 'Wednesday1-2 Friday3-4');
 
 -- ----------------------------
 -- Table structure for courseinfo

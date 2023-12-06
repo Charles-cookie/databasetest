@@ -121,7 +121,7 @@ def cour_all():
 def choose_course(win):
     root = Toplevel(win)
     root.title("choose_course")
-    root.geometry("700x400")
+    root.geometry("700x500")
     Label(root, text="课程编号    课程名称    课程介绍    课程学时    课程学分    课程星期    老师姓名    班级号").grid(row=0, column=0,
                                                                                             columnspan=2,
                                                                                             padx=15, pady=9)
