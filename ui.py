@@ -8,8 +8,14 @@ from tkinter.ttk import Combobox
 
 host = "localhost"
 user = "root"
-password = "root"
+password = "123456"                         #根据实际的root密码进行更改
 dbname = "system_choose_course"
+
+import ctypes                               #告诉操作系统使用程序自身的dpi适配
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
+                                            #获取屏幕的缩放因子
+ScaleFactor=ctypes.windll.shcore.GetScaleFactorForDevice(0)
+
 
 
 def update_info(v, e):
@@ -196,13 +202,13 @@ def change_password(win, table):
     change_pwd.geometry("350x200")
     idE = Entry(change_pwd, width=30)
     pwdE = Entry(change_pwd, width=30)
-    Label(change_pwd, text="修改密码", font="微软雅黑 14").grid(row=0, column=0, columnspan=2, sticky="w",
+    Label(change_pwd, text="修改密码", font="宋体 14").grid(row=0, column=0, columnspan=2, sticky="w",
                                                         pady=10)
-    Label(change_pwd, text="新密码", font="微软雅黑 14").grid(row=1, column=0, sticky="w")
+    Label(change_pwd, text="新密码", font="宋体 14").grid(row=1, column=0, sticky="w")
     idE.grid(row=1, column=1, sticky="e", padx=40)
-    Label(change_pwd, text="确认密码", font="微软雅黑 14").grid(row=2, column=0, sticky="w")
+    Label(change_pwd, text="确认密码", font="宋体 14").grid(row=2, column=0, sticky="w")
     pwdE.grid(row=2, column=1, sticky="e", padx=40)
-    Button(change_pwd, text="修改", font="微软雅黑 10", relief="solid",
+    Button(change_pwd, text="修改", font="宋体 10", relief="solid",
            command=lambda: update_sql(table, pwdE.get(), idE.get())).grid(row=3, column=0,
                                                                           columnspan=2,
                                                                           pady=20,
@@ -214,16 +220,16 @@ def admin_operate():
     admin_log.title("管理员操作台")
     admin_log.geometry("310x310")
     Label(admin_log, text="Hello," + name + "\n请选择您的操作\n"
-          , font="微软雅黑 14", justify=LEFT).grid(row=0, column=0, columnspan=2, sticky='w')
-    Button(admin_log, text="增加学生", font="微软雅黑 12").grid(row=1, column=0, sticky="w")
-    Button(admin_log, text="增加老师", font="微软雅黑 12").grid(row=1, column=1, padx=90)
-    Button(admin_log, text="修改老师信息", font="微软雅黑 12").grid(row=2, column=0, sticky="w", pady=10)
-    Button(admin_log, text="修改学生信息", font="微软雅黑 12").grid(row=2, column=1, padx=90)
-    Button(admin_log, text="给老师加课", font="微软雅黑 12").grid(row=3, column=0, sticky="w")
-    Button(admin_log, text="给学生加课", font="微软雅黑 12").grid(row=3, column=1, padx=90)
-    Button(admin_log, text="修改成绩", font="微软雅黑 12").grid(row=4, column=0, sticky="w")
-    Button(admin_log, text="修改密码", font="微软雅黑 12").grid(row=4, column=1, padx=90, pady=10)
-    Button(admin_log, text="增加课程", font="微软雅黑 12").grid(row=5, column=0, sticky="w")
+          , font="宋体 14", justify=LEFT).grid(row=0, column=0, columnspan=2, sticky='w')
+    Button(admin_log, text="增加学生", font="宋体 12").grid(row=1, column=0, sticky="w")
+    Button(admin_log, text="增加老师", font="宋体 12").grid(row=1, column=1, padx=90)
+    Button(admin_log, text="修改老师信息", font="宋体 12").grid(row=2, column=0, sticky="w", pady=10)
+    Button(admin_log, text="修改学生信息", font="宋体 12").grid(row=2, column=1, padx=90)
+    Button(admin_log, text="给老师加课", font="宋体 12").grid(row=3, column=0, sticky="w")
+    Button(admin_log, text="给学生加课", font="宋体 12").grid(row=3, column=1, padx=90)
+    Button(admin_log, text="修改成绩", font="宋体 12").grid(row=4, column=0, sticky="w")
+    Button(admin_log, text="修改密码", font="宋体 12").grid(row=4, column=1, padx=90, pady=10)
+    Button(admin_log, text="增加课程", font="宋体 12").grid(row=5, column=0, sticky="w")
 
 
 def teacher_operate():
@@ -231,12 +237,12 @@ def teacher_operate():
     teacher_log.title("老师操作台")
     teacher_log.geometry("250x220")
     Label(teacher_log, text="Hello," + name + "\n请选择您的操作\n"
-          , font="微软雅黑 12", justify=LEFT).grid(row=0, column=0, columnspan=2, sticky="w", pady=10)
-    Button(teacher_log, text="修改密码", font="微软雅黑 12", relief="solid",
+          , font="宋体 12", justify=LEFT).grid(row=0, column=0, columnspan=2, sticky="w", pady=10)
+    Button(teacher_log, text="修改密码", font="宋体 12", relief="solid",
            command=lambda: change_password(teacher_log, "teacherpwd")).grid(row=1, column=0)
-    Button(teacher_log, text="输入成绩", font="微软雅黑 12", relief="solid").grid(row=1, column=1, sticky="e", padx=80)
-    Button(teacher_log, text="查看课程信息", font="微软雅黑 12", relief="solid").grid(row=2, column=1)
-    Button(teacher_log, text="修改信息", font="微软雅黑 12", relief="solid").grid(row=2, column=0, pady=20)
+    Button(teacher_log, text="输入成绩", font="宋体 12", relief="solid").grid(row=1, column=1, sticky="e", padx=80)
+    Button(teacher_log, text="查看课程信息", font="宋体 12", relief="solid").grid(row=2, column=1)
+    Button(teacher_log, text="修改信息", font="宋体 12", relief="solid").grid(row=2, column=0, pady=20)
 
 
 def stu_operate():
@@ -244,18 +250,18 @@ def stu_operate():
     stu_log.title("学生操作台")
     stu_log.geometry("250x220")
     Label(stu_log, text="Hello," + name + "\nchoose your choices\n"
-          , font="微软雅黑 12", justify=LEFT).grid(row=0, column=0, columnspan=2, sticky="w", pady=10)
-    Button(stu_log, text="修改密码", font="微软雅黑 12", relief="solid",
+          , font="宋体 12", justify=LEFT).grid(row=0, column=0, columnspan=2, sticky="w", pady=10)
+    Button(stu_log, text="修改密码", font="宋体 12", relief="solid",
            command=lambda: change_password(stu_log, "stupwd")).grid(row=1, column=0)
-    Button(stu_log, text="选课", font="微软雅黑 12", relief="solid", command=lambda: choose_course(stu_log)).grid(row=1,
+    Button(stu_log, text="选课", font="宋体 12", relief="solid", command=lambda: choose_course(stu_log)).grid(row=1,
                                                                                                             column=1,
                                                                                                             padx=80,
                                                                                                             sticky="e")
-    Button(stu_log, text="查课", font="微软雅黑 12", relief="solid", command=lambda: stu_course(stu_log)).grid(row=2,
+    Button(stu_log, text="查课", font="宋体 12", relief="solid", command=lambda: stu_course(stu_log)).grid(row=2,
                                                                                                          column=0,
                                                                                                          pady=20,
                                                                                                          sticky="w")
-    Button(stu_log, text="修改信息", font="微软雅黑 12", relief="solid", command=lambda: update_it(stu_log)).grid(row=2,
+    Button(stu_log, text="修改信息", font="宋体 12", relief="solid", command=lambda: update_it(stu_log)).grid(row=2,
                                                                                                           column=1)
 
 
@@ -308,19 +314,19 @@ def checkInfo(kind, e1, e2, w1):
 
 
 def login(str, win):
-    win.destroy()
+    #win.destroy()
     log_in = Tk()
     log_in.title("登录")
     log_in.geometry("350x200")
     idE = Entry(log_in, width=30)
     pwdE = Entry(log_in, width=30)
-    Label(log_in, text=str, font="微软雅黑 14").grid(row=0, column=0, columnspan=2, sticky="w",
+    Label(log_in, text=str, font="宋体 14").grid(row=0, column=0, columnspan=2, sticky="w",
                                                  pady=10)
-    Label(log_in, text="id", font="微软雅黑 14").grid(row=1, column=0, sticky="w", )
+    Label(log_in, text="id", font="宋体 14").grid(row=1, column=0, sticky="w", )
     idE.grid(row=1, column=1, sticky="e", padx=40)
-    Label(log_in, text="pwd", font="微软雅黑 14").grid(row=2, column=0, sticky="w")
+    Label(log_in, text="pwd", font="宋体 14").grid(row=2, column=0, sticky="w")
     pwdE.grid(row=2, column=1, sticky="e", padx=40)
-    Button(log_in, text="登录", font="微软雅黑 10", relief="solid",
+    Button(log_in, text="登录", font="宋体 10", relief="solid",
            command=lambda: checkInfo(kind=str, e1=idE, e2=pwdE, w1=log_in)).grid(row=3, column=0, columnspan=2,
                                                                                  pady=20,
                                                                                  padx=20)
@@ -329,19 +335,19 @@ def login(str, win):
 name = ""
 uid = ""
 master = Tk()
-master.title("欢迎")
-master.geometry("450x370+500+200")
-canvas = Canvas(master, height=130, width=440)
-image3 = PhotoImage(file="welcome.gif")
-canvas.create_image(0, 0, anchor='nw', image=image3)
+master.title("首页")
+master.geometry("800x500+600+200")
+canvas = Canvas(master, height=250, width=797)
+image3 = PhotoImage(file="w.png")
+canvas.create_image(-100, -50, anchor='nw', image=image3)
 canvas.grid(row=0, column=0, columnspan=2)
-Label(text="你好\n"
-           "请选择你的登录方式:\n", font="微软雅黑 14", justify=LEFT).grid(row=1, column=0, columnspan=2,
+Label(text="    欢迎使用学生选课系统！\n"
+           "          请选择你的登录方式:\n", font="宋体 14", justify=LEFT).grid(row=1, column=0, columnspan=2,
                                                               sticky='w', pady=10)
-Button(master, text="学生", font="微软雅黑 14", relief="solid",
+Button(master, text="学生登录", font="宋体 14", relief="solid",
        command=lambda: login("student login", master)).grid(sticky='w', row=3, column=0, pady=10)
-Button(master, text="老师", font="微软雅黑 14", relief="solid",
-       command=lambda: login("teacher login", master)).grid(sticky='e', row=3, column=1)
-Button(master, text="管理员", font="微软雅黑 14", relief="solid",
-       command=lambda: login("adminstrator login", master)).grid(row=4, column=0, columnspan=2, pady=10)
+Button(master, text="老师登录", font="宋体 14", relief="solid",
+       command=lambda: login("teacher login", master)).grid(row=3, column=0, columnspan=2, pady=10)
+Button(master, text="管理员登录", font="宋体 14", relief="solid",
+       command=lambda: login("adminstrator login", master)).grid(sticky='e', row=3, column=1)
 master.mainloop()
