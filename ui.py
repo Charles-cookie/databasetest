@@ -5,16 +5,16 @@ from tkinter import *
 import pymysql
 from tkinter import messagebox
 from tkinter.ttk import Combobox
+import ctypes                               #告诉操作系统使用程序自身的dpi适配
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
+                                            #获取屏幕的缩放因子
+ScaleFactor=ctypes.windll.shcore.GetScaleFactorForDevice(0)
 
 host = "localhost"
 user = "root"
 password = "123456"
 dbname = "system_choose_course"
 
-import ctypes                               #告诉操作系统使用程序自身的dpi适配
-ctypes.windll.shcore.SetProcessDpiAwareness(1)
-                                            #获取屏幕的缩放因子
-ScaleFactor=ctypes.windll.shcore.GetScaleFactorForDevice(0)
 
 #更新学生信息
 def update_info(v, e):
@@ -56,20 +56,20 @@ def person_info():
 def update_it(win):
     root = Toplevel(win)
     root.title("change_info")
-    root.geometry("500x230")
-    Label(root, text="{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}".format(
+    root.geometry("600x400+190+190")
+    Label(root, text="{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}".format(
         "学生编号", "专业", "姓名", "学院", "性别", "出生日期")).grid(row=0, column=0, columnspan=2,
-                                                      pady=9, sticky="w")
+                                                      pady=9,padx=10, sticky="w")
     var = StringVar()
     rels = person_info()
-    cb = Combobox(root, textvariable=var, width=17)
+    cb = Combobox(root, textvariable=var, width=18)
     cb["value"] = ("major", "dept", "gender", "birthday")
     i = 1
     for rel in rels:
         s1 = (
-            "{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}".format(
+            "{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}".format(
                 rel[0], rel[1], rel[2], rel[3], rel[4], rel[5]))
-        Label(root, text=s1).grid(row=i, column=0, columnspan=2, padx=5, pady=30, sticky="w")
+        Label(root, text=s1).grid(row=i, column=0, columnspan=2, padx=15, pady=30, sticky="w")
         i = i + 1
     e1 = Entry(root)
     Label(root, text="请选择将要修改的信息").grid(padx=5, row=i, pady=8, column=0, sticky="e")
@@ -77,7 +77,7 @@ def update_it(win):
     i = i + 1
     Label(root, text="请输入要修改的值").grid(padx=5, row=i, column=0, sticky="e")
     e1.grid(padx=5, row=i, column=1, sticky="w")
-    Button(root, text="提交", command=lambda: update_info(var, e1)).grid(row=i + 1, column=0, columnspan=2)
+    Button(root, text="提交", command=lambda: update_info(var, e1)).grid(row=i + 1,pady=40, column=0, columnspan=2)
 
 
 #学生插入课程
@@ -121,17 +121,17 @@ def cour_all():
 def choose_course(win):
     root = Toplevel(win)
     root.title("choose_course")
-    root.geometry("600x500")
-    Label(root, text="课程编号   课程名称   课程介绍    课程学时       课程学分      课程星期    老师姓名    班级号").grid(row=0, column=0,
+    root.geometry("700x500")
+    Label(root, text="课程编号    课程名称    课程介绍    课程学时    课程学分    课程星期    老师姓名    班级号").grid(row=0, column=0,
                                                                                             columnspan=2,
-                                                                                            padx=5, pady=9)
+                                                                                            padx=15, pady=9)
     rels = cour_all()
     i = 1
     for rel in rels:
         s1 = (
             "{:<14}{:<14}{:<14}{:>14}{:>14}{:>14}{:>14}{:>14}".format(
                 rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7]))
-        Label(root, text=s1).grid(row=i, column=0, columnspan=2, padx=5, pady=9)
+        Label(root, text=s1).grid(row=i, column=0, columnspan=2, padx=15, pady=9)
         i = i + 1
     ee = Entry(root)
     Label(root, text="请填入要插入的课程编号").grid(padx=5, row=i, pady=20, column=0, sticky="e")
@@ -161,15 +161,15 @@ def chaKe():
 def stu_course(win):
     root = Toplevel(win)
     root.title("stu_course")
-    root.geometry("600x500")
-    Label(root, text="学生学号   学生姓名   课程名称    课程id       课程介绍      课程学分    课程星期    老师姓名    班级号").pack(padx=5, pady=14,
+    root.geometry("700x500")
+    Label(root, text="学生学号   学生姓名   课程名称    课程id       课程介绍      课程学分    课程星期    老师姓名    班级号").pack(padx=15, pady=14,
                                                                                                     anchor="nw")
     rels = chaKe()
     for rel in rels:
         s1 = (
             "{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}".format(
                 rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7], rel[8]))
-        Label(root, text=s1).pack(padx=5, pady=14, anchor="nw")
+        Label(root, text=s1).pack(padx=15, pady=14, anchor="nw")
 
 #更新老师信息
 def updateT_info(v, e):
@@ -385,25 +385,25 @@ def insert_student(id1, pwd, name):
 def input_student(win):
     root = Toplevel(win)
     root.title("添加学生")
-    root.geometry("300x400")
+    root.geometry("350x400+200+200")
 
     id1 = Entry(root)
     i = 1
-    Label(root, text="请输入id").grid(padx=5, row=i, column=0, sticky="e")
+    Label(root, text="请输入id").grid(padx=15,pady=20, row=i, column=0, sticky="e")
     id1.grid(padx=5, row=i, column=1, sticky="w")
 
     pwd1 = Entry(root)
     i = i + 1
-    Label(root, text="请输入pwd").grid(padx=5, row=i, column=0, sticky="e")
+    Label(root, text="请输入pwd").grid(padx=15, row=i, column=0, sticky="e",pady=20)
     pwd1.grid(padx=5, row=i, column=1, sticky="w")
 
     name1 = Entry(root)
     i = i + 1
-    Label(root, text="请输入name").grid(padx=5, row=i, column=0, sticky="e")
+    Label(root, text="请输入name").grid(padx=15, row=i, column=0, sticky="e",pady=20)
     name1.grid(padx=5, row=i, column=1, sticky="w")
 
     Button(root, text="提交", command=lambda: insert_student(id1.get(), pwd1.get(), name1.get())
-    ).grid(row=i + 1, column=0, columnspan=2)
+    ).grid(row=i + 1, column=0, columnspan=2,pady=40)
 
 #管理员增加老师
 def insert_teacher(id1, pwd, name):
@@ -432,25 +432,25 @@ def insert_teacher(id1, pwd, name):
 def input_teacher(win):
     root = Toplevel(win)
     root.title("添加老师")
-    root.geometry("300x400")
+    root.geometry("350x400+200+200")
 
     id1 = Entry(root)
     i = 1
-    Label(root, text="请输入id").grid(padx=5, row=i, column=0, sticky="e")
-    id1.grid(padx=5, row=i, column=1, sticky="w")
+    Label(root, text="请输入id").grid(padx=5, row=i, column=0, sticky="e",pady=20)
+    id1.grid(padx=15, row=i, column=1, sticky="w")
 
     pwd1 = Entry(root)
     i = i + 1
-    Label(root, text="请输入pwd").grid(padx=5, row=i, column=0, sticky="e")
-    pwd1.grid(padx=5, row=i, column=1, sticky="w")
+    Label(root, text="请输入pwd").grid(padx=5, row=i, column=0, sticky="e",pady=20)
+    pwd1.grid(padx=15, row=i, column=1, sticky="w")
 
     name1 = Entry(root)
     i = i + 1
-    Label(root, text="请输入name").grid(padx=5, row=i, column=0, sticky="e")
-    name1.grid(padx=5, row=i, column=1, sticky="w")
+    Label(root, text="请输入name").grid(padx=5, row=i, column=0, sticky="e",pady=20)
+    name1.grid(padx=15, row=i, column=1, sticky="w")
 
     Button(root, text="提交", command=lambda: insert_teacher(id1.get(), pwd1.get(), name1.get())
-           ).grid(row=i + 1, column=0, columnspan=2)
+           ).grid(row=i + 1, column=0, columnspan=2,pady=40)
 
 #管理员给老师加课程
 def insertT_course(tid,cid):
@@ -474,10 +474,10 @@ def insertT_course(tid,cid):
 def chooseT_course(win):
     root = Toplevel(win)
     root.title("choose_course")
-    root.geometry("600x500")
+    root.geometry("700x500")
     Label(root, text="课程编号   课程名称   课程介绍    课程学时       课程学分      课程星期    老师姓名    班级编号").grid(row=0, column=0,
                                                                                             columnspan=2,
-                                                                                            padx=5, pady=9)
+                                                                                            padx=15, pady=9)
     rels = cour_all()
     i = 1
     for rel in rels:
@@ -485,17 +485,17 @@ def chooseT_course(win):
             "{:<14}{:<14}{:<14}{:>14}{:>14}{:>14}{:>14}{:>14}".format(
                 rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7]))
         Label(root, text=s1).grid(
-            row=i, column=0, columnspan=2, padx=5, pady=9)
+            row=i, column=0, columnspan=2, padx=15, pady=9)
         i = i + 1
     cid1 = Entry(root)
     Label(root, text="请填入要插入的课程编号").grid(
-        padx=5, row=i, pady=20, column=0, sticky="e")
-    cid1.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+        padx=15, row=i, pady=20, column=0, sticky="e")
+    cid1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
     i = i + 1
     tid1 = Entry(root)
     Label(root, text="请填入要插入的老师编号").grid(
-        padx=5, row=i, pady=20, column=0, sticky="e")
-    tid1.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+        padx=15, row=i, pady=20, column=0, sticky="e")
+    tid1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
     Button(root, text="提交", command=lambda: insertT_course(
         cid1,tid1)).grid(row=i + 1, column=0, columnspan=2)
 
@@ -524,10 +524,10 @@ def add_course(cid,cname,cintro,chour,ccredit,cweek):
 def add_Course(win):
     root = Toplevel(win)
     root.title("add_cours")
-    root.geometry("600x600")
+    root.geometry("700x600")
     Label(root, text="课程编号   课程名称   课程介绍    课程学时       课程学分      课程星期    老师姓名    班级编号").grid(row=0, column=0,
                                                                                             columnspan=2,
-                                                                                            padx=5, pady=9)
+                                                                                            padx=15, pady=9)
     rels = cour_all()
     i = 1
     for rel in rels:
@@ -535,37 +535,37 @@ def add_Course(win):
             "{:<14}{:<14}{:<14}{:>14}{:>14}{:>14}{:>14}{:>14}".format(
                 rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7]))
         Label(root, text=s1).grid(
-            row=i, column=0, columnspan=2, padx=5, pady=9)
+            row=i, column=0, columnspan=2, padx=15, pady=9)
         i = i + 1
     cid1 = Entry(root)
     Label(root, text="请填入要插入的课程编号").grid(
-        padx=5, row=i, pady=10, column=0, sticky="e")
-    cid1.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+        padx=15, row=i, pady=10, column=0, sticky="e")
+    cid1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
     i = i + 1
     cname1 = Entry(root)
     Label(root, text="请填入要插入的课程名称").grid(
-        padx=5, row=i, pady=10, column=0, sticky="e")
-    cname1.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+        padx=15, row=i, pady=10, column=0, sticky="e")
+    cname1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
     i = i + 1
     cintro1 = Entry(root)
     Label(root, text="请填入要插入的课程介绍").grid(
-        padx=5, row=i, pady=10, column=0, sticky="e")
-    cintro1.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+        padx=15, row=i, pady=10, column=0, sticky="e")
+    cintro1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
     i = i + 1
     chour1 = Entry(root)
     Label(root, text="请填入要插入的课程学时").grid(
-        padx=5, row=i, pady=10, column=0, sticky="e")
-    chour1.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+        padx=15, row=i, pady=10, column=0, sticky="e")
+    chour1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
     i = i + 1
     ccredit1 = Entry(root)
     Label(root, text="请填入要插入的课程学分").grid(
-        padx=5, row=i, pady=10, column=0, sticky="e")
-    ccredit1.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+        padx=15, row=i, pady=10, column=0, sticky="e")
+    ccredit1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
     i = i + 1
     cweek1 = Entry(root)
     Label(root, text="请填入要插入的课程星期").grid(
-        padx=5, row=i, pady=10, column=0, sticky="e")
-    cweek1.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+        padx=15, row=i, pady=10, column=0, sticky="e")
+    cweek1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
     Button(root, text="提交", command=lambda: add_course(cid1.get(), cname1.get(), cintro1.get(
     ), chour1.get(), ccredit1.get(), cweek1.get())).grid(row=i + 1, column=0, columnspan=2)
 
@@ -620,14 +620,14 @@ def change_password(win, table):
 def admin_operate():
     admin_log = Tk()
     admin_log.title("管理员操作台")
-    admin_log.geometry("310x310")
-    Label(admin_log, text="Hello," + name + "\n请选择您的操作\n"
+    admin_log.geometry("500x300+740+260")
+    Label(admin_log, text=" Hello," + name + "\n 请选择您的操作\n"
           , font="宋体 14", justify=LEFT).grid(row=0, column=0, columnspan=2, sticky='w')
-    Button(admin_log, text="增加学生", font="宋体 12",command=lambda: input_student(admin_log)).grid(row=1, column=0, sticky="w")
-    Button(admin_log, text="增加老师", font="宋体 12",command=lambda: input_teacher(admin_log)).grid(row=1, column=1, padx=90)
-    Button(admin_log, text="给老师加课", font="宋体 12",command=lambda: chooseT_course(admin_log)).grid(row=4, column=0, sticky="w")
-    Button(admin_log, text="修改密码", font="宋体 12",command=lambda: change_password(admin_log, "adminpwd")).grid(row=4, column=1, padx=90, pady=10)
-    Button(admin_log, text="增加课程", font="宋体 12",command=lambda: add_Course(admin_log)).grid(row=5, column=0, sticky="w")
+    Button(admin_log, text=" 增加学生 ", font="宋体 12",command=lambda: input_student(admin_log)).grid(row=1, column=0, sticky="w",padx=80)
+    Button(admin_log, text=" 增加老师 ", font="宋体 12",command=lambda: input_teacher(admin_log)).grid(row=1, column=1,sticky="e",padx=0)
+    Button(admin_log, text="给老师加课", font="宋体 12",command=lambda: chooseT_course(admin_log)).grid(row=4, column=0, sticky="w",padx=80,pady=20)
+    Button(admin_log, text=" 修改密码 ", font="宋体 12",command=lambda: change_password(admin_log, "adminpwd")).grid(row=4, column=1,sticky="e",padx=0,pady=20)
+    Button(admin_log, text=" 增加课程 ", font="宋体 12",command=lambda: add_Course(admin_log)).grid(row=5, column=0, sticky="w",padx=80,pady=10)
 
 #教师操作台
 def teacher_operate():
