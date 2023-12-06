@@ -17,15 +17,15 @@ dbname = "system_choose_course"
 
 
 #更新学生信息
-def update_info(v, e):
+def update_info(text, e):
     try:
         db = pymysql.connect(host=host,
                              user=user,
                              password=password,
                              database=dbname, )
         cur = db.cursor()
-        sql = "UPDATE studentinfo SET {}='{}' WHERE sid='{}'"
-        cur.execute(sql.format(v.get(), e.get(), uid))
+        sql = "UPDATE studentinfo SET {} ='{}' WHERE sid='{}'"
+        cur.execute(sql.format(text, e, uid))
         db.commit()
         tkinter.messagebox.showinfo("successful", "插入成功")
     except pymysql.Error as e:
@@ -33,9 +33,8 @@ def update_info(v, e):
         db.rollback()
     db.close()
 
+
 #获取当前登录学生信息
-
-
 def person_info():
     try:
         db = pymysql.connect(host=host,
@@ -54,9 +53,8 @@ def person_info():
         print("数据查询失败" + str(e))
     db.close()
 
+
 #学生信息更新窗口
-
-
 def update_it(win):
     root = Toplevel(win)
     root.title("change_info")
@@ -64,10 +62,7 @@ def update_it(win):
     Label(root, text="{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}".format(
         "学生编号", "专业", "姓名", "学院", "性别", "出生日期")).grid(row=0, column=0, columnspan=2,
                                                       pady=9, padx=10, sticky="w")
-    var = StringVar()
     rels = person_info()
-    cb = Combobox(root, textvariable=var, width=18)
-    cb["value"] = ("major", "dept", "gender", "birthday")
     i = 1
     for rel in rels:
         s1 = (
@@ -76,16 +71,16 @@ def update_it(win):
         Label(root, text=s1).grid(row=i, column=0,
                                   columnspan=2, padx=15, pady=30, sticky="w")
         i = i + 1
-    e1 = Entry(root)
+    text1 = Entry(root)
     Label(root, text="请选择将要修改的信息").grid(
         padx=5, row=i, pady=8, column=0, sticky="e")
-    cb.grid(padx=5, row=i, column=1, pady=8, sticky="w")
+    text1.grid(padx=5, row=i, column=1, pady=8, sticky="w")
     i = i + 1
+    e1 = Entry(root)
     Label(root, text="请输入要修改的值").grid(padx=5, row=i, column=0, sticky="e")
     e1.grid(padx=5, row=i, column=1, sticky="w")
-    Button(root, text="提交", command=lambda: update_info(var, e1)).grid(
+    Button(root, text="提交", command=lambda: update_info(text1.get(), e1.get())).grid(
         row=i + 1, pady=40, column=0, columnspan=2)
-
 
 #学生插入课程
 def insert_course(e):
@@ -106,8 +101,6 @@ def insert_course(e):
     db.close()
 
 #获取所有课程信息
-
-
 def cour_all():
     try:
         db = pymysql.connect(host=host,
@@ -127,8 +120,6 @@ def cour_all():
     db.close()
 
 #学生选课窗口
-
-
 def choose_course(win):
     root = Toplevel(win)
     root.title("choose_course")
@@ -153,8 +144,6 @@ def choose_course(win):
         ee)).grid(row=i + 1, column=0, columnspan=2)
 
 #获取当前登录学生的课程信息
-
-
 def chaKe():
     try:
         db = pymysql.connect(host=host,
@@ -174,8 +163,6 @@ def chaKe():
     db.close()
 
 #当前学生课程信息窗口
-
-
 def stu_course(win):
     root = Toplevel(win)
     root.title("stu_course")
@@ -190,9 +177,7 @@ def stu_course(win):
         Label(root, text=s1).pack(padx=15, pady=14, anchor="nw")
 
 #更新老师信息
-
-
-def updateT_info(v, e):
+def updateT_info(text, e):
     try:
         db = pymysql.connect(host=host,
                              user=user,
@@ -200,7 +185,7 @@ def updateT_info(v, e):
                              database=dbname, )
         cur = db.cursor()
         sql = "UPDATE teacherinfo SET {}='{}' WHERE tid='{}'"
-        cur.execute(sql.format(v.get(), e.get(), uid))
+        cur.execute(sql.format(text, e, uid))
         db.commit()
         tkinter.messagebox.showinfo("successful", "插入成功")
     except pymysql.Error as e:
@@ -239,10 +224,7 @@ def updateT_it(win):
     Label(root, text="{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}".format(
         "教师编号", "教师名称", "毕业院校", "职称", "学历", "出生日期", "性别")).grid(row=0, column=0, columnspan=2,
                                                                 pady=20, padx=20, sticky="w")
-    var = StringVar()
     rels = personT_info()
-    cb = Combobox(root, textvariable=var, width=18)
-    cb["value"] = ("tTitle", "eduBg", "gender", "birthday")
     i = 1
     for rel in rels:
         s1 = (
@@ -251,19 +233,18 @@ def updateT_it(win):
         Label(root, text=s1).grid(row=i, column=0,
                                   columnspan=2, padx=20, pady=30, sticky="w")
         i = i + 1
-    e1 = Entry(root)
+    text1 = Entry(root)
     Label(root, text="请选择将要修改的信息").grid(
         padx=5, row=i, pady=8, column=0, sticky="e")
-    cb.grid(padx=5, row=i, column=1, pady=8, sticky="w")
+    text1.grid(padx=5, row=i, column=1, pady=8, sticky="w")
     i = i + 1
+    e1 = Entry(root)
     Label(root, text="请输入要修改的值").grid(padx=5, row=i, column=0, sticky="e")
     e1.grid(padx=5, row=i, column=1, sticky="w")
     Button(root, text="提交", command=lambda: updateT_info(
-        var, e1)).grid(row=i + 1, column=0, columnspan=2, pady=40)
+        text1.get(), e1.get())).grid(row=i + 1, column=0, columnspan=2, pady=40)
 
 #更新成绩信息
-
-
 def updateG_info(g, s, c):
     try:
 
@@ -679,8 +660,6 @@ def update_sql(table, pwd1, pwd2):
         db.close()
 
 #更改密码窗口
-
-
 def change_password(win, table):
     change_pwd = Toplevel(win)
     change_pwd.title("改密")
