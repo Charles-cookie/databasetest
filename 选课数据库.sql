@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 05/12/2023 19:15:36
+ Date: 06/12/2023 17:25:29
 */
 
 SET NAMES utf8mb4;
@@ -49,7 +49,6 @@ CREATE TABLE `classroom`  (
 -- Records of classroom
 -- ----------------------------
 INSERT INTO `classroom` VALUES ('1', 50);
-INSERT INTO `classroom` VALUES ('100', 100);
 INSERT INTO `classroom` VALUES ('2', 100);
 INSERT INTO `classroom` VALUES ('3', 100);
 INSERT INTO `classroom` VALUES ('4', 50);
@@ -73,7 +72,6 @@ CREATE TABLE `classroom_arr`  (
 -- Records of classroom_arr
 -- ----------------------------
 INSERT INTO `classroom_arr` VALUES ('1', '3', 'Monday1-2 Wednesday7-8');
-INSERT INTO `classroom_arr` VALUES ('100', '100', 'Wednesday1-2 Friday3-4');
 INSERT INTO `classroom_arr` VALUES ('2', '5', 'Monday3-4 Wednesday5-6');
 INSERT INTO `classroom_arr` VALUES ('3', '4', 'Monday1-2 Thursday7-8');
 INSERT INTO `classroom_arr` VALUES ('4', '1', 'Monday7-8 Wednesday3-4');
@@ -97,7 +95,6 @@ CREATE TABLE `courseinfo`  (
 -- Records of courseinfo
 -- ----------------------------
 INSERT INTO `courseinfo` VALUES ('1', 'C', 'slightly', 20, 2, '1-6');
-INSERT INTO `courseinfo` VALUES ('100', 'test', 'slightly', 30, 3, '1-7');
 INSERT INTO `courseinfo` VALUES ('2', 'java', 'slightly', 25, 3, '1-8');
 INSERT INTO `courseinfo` VALUES ('3', 'database', 'slightly', 20, 1, '1-10');
 INSERT INTO `courseinfo` VALUES ('4', 'algorithm', 'slightly', 10, 2.5, '6-12');
@@ -121,7 +118,6 @@ CREATE TABLE `sc`  (
 -- Records of sc
 -- ----------------------------
 INSERT INTO `sc` VALUES ('1001', '1', 0);
-INSERT INTO `sc` VALUES ('1001', '100', 0);
 INSERT INTO `sc` VALUES ('1001', '2', 0);
 INSERT INTO `sc` VALUES ('1001', '3', 0);
 INSERT INTO `sc` VALUES ('1001', '4', 0);
@@ -192,7 +188,6 @@ CREATE TABLE `teach`  (
 -- Records of teach
 -- ----------------------------
 INSERT INTO `teach` VALUES ('1', '3');
-INSERT INTO `teach` VALUES ('100', '100');
 INSERT INTO `teach` VALUES ('2', '4');
 INSERT INTO `teach` VALUES ('3', '5');
 INSERT INTO `teach` VALUES ('4', '1');
@@ -217,7 +212,6 @@ CREATE TABLE `teacherinfo`  (
 -- Records of teacherinfo
 -- ----------------------------
 INSERT INTO `teacherinfo` VALUES ('1', 'A', 'anda', 'teacher', 'benke', '2000-01-01', '1');
-INSERT INTO `teacherinfo` VALUES ('100', 'test teacher', 'none', 'none', 'none', '2000-01-01', '1');
 INSERT INTO `teacherinfo` VALUES ('2', 'B', 'anlida', 'teacher', 'benke', '2000-01-01', '1');
 INSERT INTO `teacherinfo` VALUES ('3', 'C', 'keda', 'teacher', 'benke', '2000-01-01', '2');
 INSERT INTO `teacherinfo` VALUES ('4', 'D', 'zheda', 'teacher', 'benke', '2000-01-01', '2');
@@ -241,6 +235,5 @@ INSERT INTO `teacherpwd` VALUES ('2', '1234', 'B');
 INSERT INTO `teacherpwd` VALUES ('3', '1234', 'C');
 INSERT INTO `teacherpwd` VALUES ('4', '1234', 'D');
 INSERT INTO `teacherpwd` VALUES ('5', '1234', 'E');
-INSERT INTO `teacherpwd` VALUES ('100', '1234', 'test teacher');
 
 SET FOREIGN_KEY_CHECKS = 1;
