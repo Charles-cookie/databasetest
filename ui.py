@@ -106,15 +106,18 @@ def insert_course(e):
 #学生删除课程
 def stu_drop(_cid):
     try:
-        db=pymysql.connect(host=host,
+        db=pymysql.connect( host=host,
                             user=user,
                             password=password,
-                            database=dbname, )
+                            database=dbname,  )
         cur=db.cursor()
-        sql="delete from sc where sc.sid='{}' AND sc.cid='{}'"
-        cur.execute(sql.format(uid,_cid))
+        sql1="select cid from sc where sc.cid='{}"          #因为delete的特殊性，添加select检测退课是否成功
+        cur.execute(sql1.format(_cid))
         db.commit()
         tkinter.messagebox.showinfo("successful", "退课成功")
+        sql = "delete from sc where sc.sid='{}' AND sc.cid ='{}'"
+        cur.execute(sql.format(uid, _cid))
+        db.commit()
     except pymysql.Error as e:
         tkinter.messagebox.showinfo("unsuccessful", "退课失败" + str(e))
         db.rollback()
