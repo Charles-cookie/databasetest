@@ -71,11 +71,11 @@ CREATE TABLE `classroom_arr`  (
 -- ----------------------------
 -- Records of classroom_arr
 -- ----------------------------
-INSERT INTO `classroom_arr` VALUES ('1', '3', 'Monday1-2 Wednesday7-8');
-INSERT INTO `classroom_arr` VALUES ('2', '5', 'Monday3-4 Wednesday5-6');
-INSERT INTO `classroom_arr` VALUES ('3', '4', 'Monday1-2 Thursday7-8');
-INSERT INTO `classroom_arr` VALUES ('4', '1', 'Monday7-8 Wednesday3-4');
-INSERT INTO `classroom_arr` VALUES ('5', '2', 'Wednesday1-2 Friday3-4');
+INSERT INTO `classroom_arr` VALUES ('1', '3', 'Monday Wednesday');
+INSERT INTO `classroom_arr` VALUES ('2', '5', 'Monday Wednesday');
+INSERT INTO `classroom_arr` VALUES ('3', '4', 'Monday Thursday');
+INSERT INTO `classroom_arr` VALUES ('4', '1', 'Monday Wednesday');
+INSERT INTO `classroom_arr` VALUES ('5', '2', 'Wednesday Friday');
 
 -- ----------------------------
 -- Table structure for courseinfo
@@ -107,27 +107,29 @@ DROP TABLE IF EXISTS `sc`;
 CREATE TABLE `sc`  (
   `sId` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `cId` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
+  `tid` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `grade` float DEFAULT NULL,
-  PRIMARY KEY (`sId`, `cId`) USING BTREE,
+  PRIMARY KEY (`sId`, `cId`, `tid`) USING BTREE,
   INDEX `cId`(`cId`) USING BTREE,
-  CONSTRAINT `sc_ibfk_1` FOREIGN KEY (`sId`) REFERENCES `studentinfo` (`sId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `sc_ibfk_2` FOREIGN KEY (`cId`) REFERENCES `courseinfo` (`cId`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `sc_ibfk_1` FOREIGN KEY (`sId`) REFERENCES `studentinfo` (`sId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `sc_ibfk_2` FOREIGN KEY (`cId`,`tid`) REFERENCES `teach` (`cId`,`tid`) ON DELETE CASCADE ON UPDATE CASCADE
+										--添加复合主键约束确保选课有效
 ) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sc
 -- ----------------------------
-INSERT INTO `sc` VALUES ('1001', '1', 0);
-INSERT INTO `sc` VALUES ('1001', '2', 0);
-INSERT INTO `sc` VALUES ('1001', '3', 0);
-INSERT INTO `sc` VALUES ('1001', '4', 0);
-INSERT INTO `sc` VALUES ('1001', '5', 0);
-INSERT INTO `sc` VALUES ('1002', '1', 0);
-INSERT INTO `sc` VALUES ('1002', '2', 0);
-INSERT INTO `sc` VALUES ('1002', '3', 0);
-INSERT INTO `sc` VALUES ('1002', '4', 0);
-INSERT INTO `sc` VALUES ('1002', '5', 0);
-INSERT INTO `sc` VALUES ('1003', '3', 0);
+INSERT INTO `sc` VALUES ('1001', '1','3', 0);
+INSERT INTO `sc` VALUES ('1001', '2','4', 0);
+INSERT INTO `sc` VALUES ('1001', '3','5', 0);
+INSERT INTO `sc` VALUES ('1001', '4','1', 0);
+INSERT INTO `sc` VALUES ('1001', '5','2', 0);
+INSERT INTO `sc` VALUES ('1002', '1','3', 0);
+INSERT INTO `sc` VALUES ('1002', '2','4', 0);
+INSERT INTO `sc` VALUES ('1002', '3','5', 0);
+INSERT INTO `sc` VALUES ('1002', '4','1', 0);
+INSERT INTO `sc` VALUES ('1002', '5','2', 0);
+INSERT INTO `sc` VALUES ('1003', '3','5', 0);
 
 -- ----------------------------
 -- Table structure for studentinfo
@@ -180,8 +182,8 @@ CREATE TABLE `teach`  (
   `tId` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`tId`, `cId`) USING BTREE,
   INDEX `cId`(`cId`) USING BTREE,
-  CONSTRAINT `teach_ibfk_1` FOREIGN KEY (`tId`) REFERENCES `teacherinfo` (`tId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `teach_ibfk_2` FOREIGN KEY (`cId`) REFERENCES `courseinfo` (`cId`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `teach_ibfk_1` FOREIGN KEY (`tId`) REFERENCES `teacherinfo` (`tId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `teach_ibfk_2` FOREIGN KEY (`cId`) REFERENCES `courseinfo` (`cId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
