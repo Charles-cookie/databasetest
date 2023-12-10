@@ -111,7 +111,6 @@ def insert_course(e,e1):
 
 
 
-
 #学生删除课程
 def stu_drop(_cid,_tid):
     try:
@@ -120,17 +119,15 @@ def stu_drop(_cid,_tid):
                             password=password,
                             database=dbname,  )
         cur=db.cursor()
-        tkinter.messagebox.showinfo("successful", "退课成功")
         sql = "delete from sc where sc.sid='{}' AND sc.cid ='{}' AND sc.tid='{}'"
         cur.execute(sql.format(uid, _cid, _tid))
+        tkinter.messagebox.showinfo("successful", "退课成功")
         db.commit()
-
     except pymysql.Error as e:
         tkinter.messagebox.showinfo("unsuccessful", "退课失败" + str(e))
         db.rollback()
 
     db.close()
-
 
 
 #获取所有课程信息
@@ -670,9 +667,9 @@ def teacher_drop(_cid,_tid):
                             password=password,
                             database=dbname,  )
         cur=db.cursor()
-        tkinter.messagebox.showinfo("successful", "删课成功")
         sql = "delete from teach where tid='{}' AND cid ='{}'"
         cur.execute(sql.format(_tid, _cid))
+        tkinter.messagebox.showinfo("successful", "删课成功")
         db.commit()
     except pymysql.Error as e:
         tkinter.messagebox.showinfo("unsuccessful", "退课失败" + str(e))
@@ -731,7 +728,7 @@ def add_course(cid, cname, cintro, chour, ccredit, cweek, crid):
         cur.execute(sql.format(cid, cname, cintro, chour, ccredit, cweek))
         #sql = "INSERT INTO teach(cId,tId) VALUES ('{}',100)"
         #cur.execute(sql.format(cid))
-        sql = "INSERT INTO classroom_arr(crId,cId,cTime) VALUES ('{}','{}','Sunday1-2 Sunday3-4')"
+        sql = "INSERT INTO classroom_arr(crId,cId,cTime) VALUES ('{}','{}','Monday Sunday')"
         cur.execute(sql.format(crid, cid))
         db.commit()
         tkinter.messagebox.showinfo("successful", "插入成功")
@@ -739,6 +736,26 @@ def add_course(cid, cname, cintro, chour, ccredit, cweek, crid):
         tkinter.messagebox.showinfo("unsuccessful", "插入失败" + str(e))
         db.rollback()
     db.close()
+
+
+#管理员删除课程
+def drop_course(_cid):
+    try:
+        db=pymysql.connect( host=host,
+                            user=user,
+                            password=password,
+                            database=dbname,  )
+        cur=db.cursor()
+        sql = "delete from courseinfo where cid='{}'"
+        cur.execute(sql.format(_cid))
+        tkinter.messagebox.showinfo("successful", "删除成功")
+        db.commit()
+    except pymysql.Error as e:
+        tkinter.messagebox.showinfo("unsuccessful", "删除失败" + str(e))
+        db.rollback()
+    db.close()
+
+
 
 #获取所有课程部分信息
 def cour1_all():
@@ -761,11 +778,11 @@ def cour1_all():
 
 
 
-#管理员增加课程窗口
-def add_Course(win):
+#管理员增删课程窗口
+def add_drop_Course(win):
     root = Toplevel(win)
-    root.title("add_cours")
-    root.geometry("700x700")
+    root.title("add_drop_cours")
+    root.geometry("700x900+50+50")
     Label(root, text="课程编号   课程名称   课程介绍    课程学时       课程学分      课程星期    班级编号").grid(row=0, column=0,
                                                                                      columnspan=2,
                                                                                      padx=15, pady=9)
@@ -812,8 +829,13 @@ def add_Course(win):
     Label(root, text="请填入要插入的班级编号").grid(
         padx=15, row=i, pady=10, column=0, sticky="e")
     crid1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
-    Button(root, text="提交", command=lambda: add_course(cid1.get(), cname1.get(), cintro1.get(
+    Button(root, text="插入提交", command=lambda: add_course(cid1.get(), cname1.get(), cintro1.get(
     ), chour1.get(), ccredit1.get(), cweek1.get(), crid1.get())).grid(row=i + 1, column=0, columnspan=2)
+    cid2=Entry(root)
+    Label(root, text="如果要删除课程请输入课程编号：").grid(
+        padx=15, row=i+2, pady=10, column=0, sticky="e")
+    cid2.grid(padx=15, row=i+2, column=1, pady=10, sticky="w")
+    Button(root, text="删除提交", command=lambda: drop_course(cid2.get())).grid(row=i + 3, column=0, columnspan=2)
 
 
 
@@ -882,7 +904,7 @@ def admin_operate():
         admin_log)).grid(row=4, column=0, sticky="w", padx=80, pady=20)
     Button(admin_log, text=" 修改密码 ", font="宋体 12", command=lambda: change_password(
         admin_log, "adminpwd")).grid(row=4, column=1, sticky="e", padx=0, pady=20)
-    Button(admin_log, text=" 增加课程 ", font="宋体 12", command=lambda: add_Course(
+    Button(admin_log, text=" 增删课程 ", font="宋体 12", command=lambda: add_drop_Course(
         admin_log)).grid(row=5, column=0, sticky="w", padx=80, pady=10)
 
 

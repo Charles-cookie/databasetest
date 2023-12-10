@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 06/12/2023 17:25:29
+ Date: 10/12/2023 13:47:29
 */
 
 SET NAMES utf8mb4;
@@ -64,8 +64,8 @@ CREATE TABLE `classroom_arr`  (
   `cTime` varchar(40) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   PRIMARY KEY (`crId`, `cId`) USING BTREE,
   INDEX `cId`(`cId`) USING BTREE,
-  CONSTRAINT `classroom_arr_ibfk_1` FOREIGN KEY (`crId`) REFERENCES `classroom` (`crId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `classroom_arr_ibfk_2` FOREIGN KEY (`cId`) REFERENCES `courseinfo` (`cId`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `classroom_arr_ibfk_1` FOREIGN KEY (`crId`) REFERENCES `classroom` (`crId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `classroom_arr_ibfk_2` FOREIGN KEY (`cId`) REFERENCES `courseinfo` (`cId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -113,7 +113,7 @@ CREATE TABLE `sc`  (
   INDEX `cId`(`cId`) USING BTREE,
   CONSTRAINT `sc_ibfk_1` FOREIGN KEY (`sId`) REFERENCES `studentinfo` (`sId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `sc_ibfk_2` FOREIGN KEY (`cId`,`tid`) REFERENCES `teach` (`cId`,`tid`) ON DELETE CASCADE ON UPDATE CASCADE
-										--添加复合主键约束确保选课有效
+										
 ) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
