@@ -34,6 +34,8 @@ def update_info(text, e):
     db.close()
 
 
+
+
 #获取当前登录学生信息
 def person_info():
     try:
@@ -54,11 +56,14 @@ def person_info():
     db.close()
 
 
+
+
+
 #学生信息更新窗口
 def update_it(win):
     root = Toplevel(win)
     root.title("change_info")
-    root.geometry("600x400+190+190")
+    root.geometry("700x400+190+190")
     Label(root, text="{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}\n"
                      "{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}".format(
         "学生编号", "专业", "姓名", "学院", "性别", "出生日期",
@@ -84,16 +89,18 @@ def update_it(win):
     Button(root, text="提交", command=lambda: update_info(text1.get(), e1.get())).grid(
         row=i + 1, pady=40, column=0, columnspan=2)
 
+
+
 #学生插入课程
-def insert_course(e):
+def insert_course(e,e1):
     try:
         db = pymysql.connect(host=host,
                              user=user,
                              password=password,
                              database=dbname, )
         cur = db.cursor()
-        sql = "INSERT INTO sc(sId,cId,grade) VALUES (%s,%s,0)"
-        value = (uid, e.get())
+        sql = "INSERT INTO sc(sId,cId,tid,grade) VALUES (%s,%s,%s,0)"
+        value = (uid, e.get(),e1.get())
         cur.execute(sql, value)
         db.commit()
         tkinter.messagebox.showinfo("successful", "插入成功")
@@ -103,26 +110,24 @@ def insert_course(e):
     db.close()
 
 
+
 #学生删除课程
-def stu_drop(_cid):
+def stu_drop(_cid,_tid):
     try:
         db=pymysql.connect( host=host,
                             user=user,
                             password=password,
                             database=dbname,  )
         cur=db.cursor()
-        sql1="select cid from sc where sc.cid='{}"          #因为delete的特殊性，添加select检测退课是否成功
-        cur.execute(sql1.format(_cid))
-        db.commit()
+        sql = "delete from sc where sc.sid='{}' AND sc.cid ='{}' AND sc.tid='{}'"
+        cur.execute(sql.format(uid, _cid, _tid))
         tkinter.messagebox.showinfo("successful", "退课成功")
-        sql = "delete from sc where sc.sid='{}' AND sc.cid ='{}'"
-        cur.execute(sql.format(uid, _cid))
         db.commit()
     except pymysql.Error as e:
         tkinter.messagebox.showinfo("unsuccessful", "退课失败" + str(e))
         db.rollback()
-    db.close()
 
+    db.close()
 
 
 #获取所有课程信息
@@ -135,7 +140,7 @@ def cour_all():
                              )
         print("数据库连接成功")
         cur = db.cursor()
-        sql = "SELECT courseinfo.*,teacherinfo. tname ,classroom_arr. crId FROM courseinfo,teach, teacherinfo,classroom,classroom_arr WHERE  teach. tId =teacherinfo. tId  AND classroom. crId =classroom_arr. crId  AND classroom_arr. cId =courseinfo. cId  AND teach. cId =courseinfo. cId  ORDER BY courseinfo. cId  "
+        sql = "SELECT courseinfo.*,teacherinfo.tname,teacherinfo.tid,classroom_arr. crId FROM courseinfo,teach, teacherinfo,classroom,classroom_arr WHERE  teach. tId =teacherinfo. tId  AND classroom. crId =classroom_arr. crId  AND classroom_arr. cId =courseinfo. cId  AND teach. cId =courseinfo. cId  ORDER BY courseinfo. cId  "
         cur.execute(sql)
         results = cur.fetchall()
         return results
@@ -144,20 +149,23 @@ def cour_all():
         print("数据查询失败" + str(e))
     db.close()
 
+
+
+
 #学生选课窗口
 def choose_course(win):
     root = Toplevel(win)
     root.title("choose_course")
-    root.geometry("700x500")
-    Label(root, text="课程编号    课程名称    课程介绍    课程学时    课程学分    课程星期    老师姓名    班级号").grid(row=0, column=0,
+    root.geometry("900x800")
+    Label(root, text="课程编号    课程名称    课程介绍    课程学时    课程学分    课程星期    老师姓名    老师编号   教室号").grid(row=0, column=0,
                                                                                          columnspan=2,
                                                                                          padx=15, pady=9)
     rels = cour_all()
     i = 1
     for rel in rels:
         s1 = (
-            "{:<14}{:<14}{:<14}{:>14}{:>14}{:>14}{:>14}{:>14}".format(
-                rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7]))
+            "{:<14}{:<14}{:<14}{:>14}{:>14}{:>14}{:>14}{:>14}{:>14}".format(
+                rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7], rel[8]))
         Label(root, text=s1).grid(
             row=i, column=0, columnspan=2, padx=15, pady=9)
         i = i + 1
@@ -165,8 +173,17 @@ def choose_course(win):
     Label(root, text="请填入要插入的课程编号").grid(
         padx=5, row=i, pady=20, column=0, sticky="e")
     ee.grid(padx=5, row=i, column=1, pady=10, sticky="w")
+    ee1 = Entry(root)
+    Label(root, text="请填入要选择的老师编号").grid(
+        padx=5, row=i+1, pady=20, column=0, sticky="e")
+    ee1.grid(padx=5, row=i+1, column=1, pady=10, sticky="w")
+
     Button(root, text="提交", command=lambda: insert_course(
-        ee)).grid(row=i + 1, column=0, columnspan=2)
+        ee,ee1)).grid(row=i + 2, column=0, columnspan=2)
+
+
+
+
 
 #获取当前登录学生的课程信息
 def chaKe():
@@ -178,7 +195,7 @@ def chaKe():
                              )
         print("数据库连接成功")
         cur = db.cursor()
-        sql = "SELECT studentinfo.sId,studentinfo.name,courseinfo.cName,courseinfo.cId,courseinfo.cIntro,courseinfo.cCredit,courseinfo.cWeek,teacherinfo.tName,classroom.crId FROM studentinfo, sc,courseinfo,teach, teacherinfo,classroom,classroom_arr WHERE studentinfo.sId = sc.sId AND courseinfo.cId=sc.cId AND  teach.tId=teacherinfo.tId AND classroom.crId=classroom_arr.crId AND classroom_arr.cId=courseinfo.cId AND teach.cId=courseinfo.cId AND sc.sid='{}' "
+        sql = "SELECT studentinfo.sId,studentinfo.name,courseinfo.*,teacherinfo.tName,sc.tid FROM studentinfo, sc,courseinfo, teacherinfo WHERE studentinfo.sId = sc.sId AND courseinfo.cId=sc.cId AND sc.tId=teacherinfo.tid  AND sc.sid='{}' "
         cur.execute((sql.format(uid)))
         results = cur.fetchall()
         return results
@@ -187,24 +204,62 @@ def chaKe():
         print("数据查询失败" + str(e))
     db.close()
 
+
+
+
+#获取当前学生或者老师名单
+
+def get_ID(type):
+    try:
+        db=pymysql.connect(host=host,
+                           user=user,
+                           password=password,
+                           database=dbname,
+                           )
+        print("数据库连接成功")
+        cur = db.cursor()
+        if type=="stu":
+            sql="select Sid from studentinfo"
+        elif type=="teacher":
+            sql="select Tid from teacherinfo"
+        else:
+            sql="select id from adminpwd"
+        cur.execute(sql)
+        results = cur.fetchall()
+        return results
+    except pymysql.Error as e:
+        print("数据查询失败" + str(e))
+    db.close()
+
+
+
+
+
 #当前学生课程信息窗口
 def stu_course(win):
     root = Toplevel(win)
     root.title("stu_course")
-    root.geometry("700x500")
-    Label(root, text="学生学号   学生姓名   课程名称    课程id       课程介绍      课程学分    课程星期    老师姓名    班级号").pack(padx=15, pady=14,
+    root.geometry("1000x800")
+    Label(root, text="学生学号   学生姓名     课程id     课程名称     课程介绍      课程学时    课程学分    课程星期      老师姓名     老师编号").pack(padx=15, pady=14,
                                                                                                     anchor="nw")
     rels = chaKe()
     for rel in rels:
         s1 = (
-            "{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}".format(
-                rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7], rel[8]))
+            "{:<14}{:<14}{:<14}{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}".format(
+                rel[0], rel[1], rel[2], rel[3], rel[4], rel[5], rel[6], rel[7], rel[8], rel[9]))
         Label(root, text=s1).pack(padx=15, pady=14, anchor="nw")
-    Label(root, text="如需退请输入课程ID：").pack(
+    Label(root, text="如需退课请输入课程ID：").pack(
         padx=30, pady=8, anchor="w")
     text1 = Entry(root)
     text1.pack(padx=30, pady=0, anchor="w")
-    Button(root, text=" 退课 ", command=lambda: stu_drop(text1.get())).pack(anchor="w",padx=30,pady=10)
+    Label(root, text="请输入对应老师tid：").pack(
+        padx=30, pady=8, anchor="w")
+    text2 = Entry(root)
+    text2.pack(padx=30, pady=0, anchor="w")
+    Button(root, text=" 退课 ", command=lambda: stu_drop(text1.get(),text2.get())).pack(anchor="w",padx=30,pady=10)
+
+
+
 
 #更新老师信息
 def updateT_info(text, e):
@@ -223,9 +278,9 @@ def updateT_info(text, e):
         db.rollback()
     db.close()
 
+
+
 #获取当前登录老师信息
-
-
 def personT_info():
     try:
         db = pymysql.connect(host=host,
@@ -244,13 +299,14 @@ def personT_info():
         print("数据查询失败" + str(e))
     db.close()
 
-#老师信息更新窗口
 
+
+#老师信息更新窗口
 
 def updateT_it(win):
     root = Toplevel(win)
     root.title("change_info")
-    root.geometry("700x400+190+190")
+    root.geometry("800x400+190+190")
     Label(root, text="{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}\n"
                      "{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}".format(
         "教师编号", "教师名称", "毕业院校", "职称", "学历", "出生日期", "性别",
@@ -273,8 +329,11 @@ def updateT_it(win):
     e1 = Entry(root)
     Label(root, text="请输入要修改的值").grid(padx=5, row=i, column=0, sticky="e")
     e1.grid(padx=5, row=i, column=1, sticky="w")
+
     Button(root, text="提交", command=lambda: updateT_info(
         text1.get(), e1.get())).grid(row=i + 1, column=0, columnspan=2, pady=40)
+
+
 
 #更新成绩信息
 def updateG_info(g, s, c):
@@ -291,8 +350,8 @@ def updateG_info(g, s, c):
         cur = db.cursor()
 
         # 查询记录是否存在以及是否需要更新
-        sql_select = "SELECT grade FROM sc WHERE sid='{}' AND cid='{}'".format(
-            s.get(), c.get())
+        sql_select = "SELECT grade FROM sc WHERE sid='{}' AND cid='{}' AND tid='{}'".format(
+            s.get(), c.get(),uid)
         cur.execute(sql_select)
         result = cur.fetchone()
 
@@ -300,8 +359,8 @@ def updateG_info(g, s, c):
             tkinter.messagebox.showinfo("失败", "记录不存在")
             return
 
-        sql = "UPDATE sc SET grade ='{}' WHERE sid='{}' AND cid='{}'"
-        cur.execute(sql.format(g.get(), s.get(), c.get()))
+        sql = "UPDATE sc SET grade ='{}' WHERE sid='{}' AND cid='{}' AND tid='{}'"
+        cur.execute(sql.format(g.get(), s.get(), c.get(),uid))
         db.commit()
         tkinter.messagebox.showinfo("successful", "插入成功")
     except pymysql.Error as e:
@@ -309,9 +368,9 @@ def updateG_info(g, s, c):
         db.rollback()
     db.close()
 
+
+
 #获取当前登陆老师能修改成绩表
-
-
 def get_grade():
     try:
         db = pymysql.connect(host=host,
@@ -321,7 +380,7 @@ def get_grade():
                              )
         print("数据库连接成功")
         cur = db.cursor()
-        sql = "SELECT sc.cId, sc.sId, sc.grade FROM sc JOIN teach t ON sc.cId = t.cId WHERE t.tId = '{}'"
+        sql = "SELECT sc.cId, sc.sId, sc.grade FROM sc  WHERE sc.tid = '{}'  "
         cur.execute(sql.format(uid))
         results = cur.fetchall()
         return results
@@ -330,9 +389,9 @@ def get_grade():
         print("数据查询失败" + str(e))
     db.close()
 
+
+
 #老师输入成绩界面
-
-
 def input_grade(win):
     root = Toplevel(win)
     root.title("input_grade")
@@ -367,9 +426,10 @@ def input_grade(win):
     Button(root, text="提交", command=lambda: updateG_info(g1, s1, c1)
            ).grid(row=i + 1, column=0, pady=40, columnspan=2)
 
+
+
+
 #获取当前登陆老师课程信息
-
-
 def getT_course():
     try:
         db = pymysql.connect(host=host,
@@ -388,13 +448,14 @@ def getT_course():
         print("数据查询失败" + str(e))
     db.close()
 
+
+
+
 #老师查看课程信息界面
-
-
 def teach_course(win):
     root = Toplevel(win)
     root.title("input_grade")
-    root.geometry("550x250+200+200")
+    root.geometry("650x550+200+200")
     Label(root, text="{:<14}{:<14}{:<14}{:<14}{:<14}{:<14}".format(
         "课程编号", "课程名称", "课程介绍", "课时", "学分", "上课星期")).grid(row=0, column=0, columnspan=2,
                                                           pady=9, sticky="w")
@@ -408,9 +469,10 @@ def teach_course(win):
                                   columnspan=5, padx=20, pady=10, sticky="w")
         i = i + 1
 
+
+
+
 #管理员增加学生
-
-
 def insert_student(id1, pwd, name):
     try:
         db = pymysql.connect(host=host,
@@ -433,38 +495,53 @@ def insert_student(id1, pwd, name):
         print("数据查询失败" + str(e))
     db.close()
 
-#管理员增加学生界面
 
 
+#管理员增减学生界面
 def input_student(win):
     root = Toplevel(win)
-    root.title("添加学生")
-    root.geometry("350x400+200+200")
+    root.title("增减学生")
+    root.geometry("450x500+200+200")
+    Label(root,text="现有学生：").grid(padx=10,row=0,sticky="w")
 
+    rels=get_ID("stu")
+    i=0
+    for rel in rels:
+        s1 = ("{:<0}".format(rel[0]))
+        Label(root, text=s1).grid(
+            row=1, padx=10+i*50,sticky="w")
+        i = i + 1
+    i = i + 1
     id1 = Entry(root)
-    i = 1
     Label(root, text="请输入id").grid(
-        padx=15, pady=20, row=i, column=0, sticky="e")
-    id1.grid(padx=5, row=i, column=1, sticky="w")
+        padx=15, pady=20, row=i, column=0, sticky="w")
+    id1.grid(padx=200, row=i, column=0, sticky="w")
 
     pwd1 = Entry(root)
     i = i + 1
     Label(root, text="请输入pwd").grid(
-        padx=15, row=i, column=0, sticky="e", pady=20)
-    pwd1.grid(padx=5, row=i, column=1, sticky="w")
+        padx=15, row=i, column=0, sticky="w", pady=20)
+    pwd1.grid(padx=200, row=i, column=0, sticky="w")
 
     name1 = Entry(root)
     i = i + 1
     Label(root, text="请输入name").grid(
-        padx=15, row=i, column=0, sticky="e", pady=20)
-    name1.grid(padx=5, row=i, column=1, sticky="w")
+        padx=15, row=i, column=0, sticky="w", pady=20)
+    name1.grid(padx=200, row=i, column=0, sticky="w")
+    Button(root, text=" 增加提交 ", command=lambda: insert_student(id1.get(), pwd1.get(), name1.get())
+           ).grid(row=i + 1, column=0, pady=20,padx=50)
 
-    Button(root, text="提交", command=lambda: insert_student(id1.get(), pwd1.get(), name1.get())
-           ).grid(row=i + 1, column=0, columnspan=2, pady=40)
+    Label(root, text="如果需要删除学生，请输入Sid:").grid(
+        padx=10, row=i + 2, column=0, sticky="w", pady=20)
+    _id=Entry(root)
+    _id.grid(padx=250,row=i + 2,column=0,sticky="w")
+    Button(root, text=" 删除提交 ", command=lambda: del_teacher_stu(_id.get(),"stu")
+           ).grid(row=i + 3, column=0, pady=20, padx=50)
+
+
+
 
 #管理员增加老师
-
-
 def insert_teacher(id1, pwd, name):
     try:
         db = pymysql.connect(host=host,
@@ -487,38 +564,82 @@ def insert_teacher(id1, pwd, name):
         print("数据查询失败" + str(e))
     db.close()
 
-#管理员增加老师界面
 
 
+
+#管理员删除老师或学生
+def del_teacher_stu(id,type):
+    try:
+        db = pymysql.connect(host=host,
+                             user=user,
+                             password=password,
+                             database=dbname,
+                             )
+        print("数据库连接成功")
+        cur = db.cursor()
+        if type=="teacher":
+            sql1 = "delete from teacherinfo where tid='{}'"
+            sql2 = "delete from teacherpwd where id='{}'"
+        elif type=="stu":
+            sql1 = "delete from studentinfo where sid={}"
+            sql2 = "delete from stupwd where id={}"
+        cur.execute(sql1.format(id))
+        cur.execute(sql2.format(id))
+        db.commit()
+        tkinter.messagebox.showinfo("successful", "删除成功")
+    except pymysql.Error as e:
+        tkinter.messagebox.showinfo("unsuccessful", "删除失败" + str(e))
+        db.rollback()
+    db.close()
+
+
+
+
+#管理员增减老师界面
 def input_teacher(win):
     root = Toplevel(win)
-    root.title("添加老师")
-    root.geometry("350x400+200+200")
+    root.title("增减老师")
+    root.geometry("450x500+200+200")
+    Label(root, text="现有老师：").grid(padx=10, row=0, sticky="w")
 
+    rels = get_ID("teacher")
+    i = 0
+    for rel in rels:
+        s1 = ("{:<0}".format(rel[0]))
+        Label(root, text=s1).grid(
+            row=1, padx=10 + i * 50, sticky="w")
+        i = i + 1
+    i= i + 1
     id1 = Entry(root)
-    i = 1
     Label(root, text="请输入id").grid(
-        padx=5, row=i, column=0, sticky="e", pady=20)
-    id1.grid(padx=15, row=i, column=1, sticky="w")
+        padx=5, row=i, column=0, sticky="w", pady=20)
+    id1.grid(padx=200, row=i, column=0, sticky="w")
 
     pwd1 = Entry(root)
     i = i + 1
     Label(root, text="请输入pwd").grid(
-        padx=5, row=i, column=0, sticky="e", pady=20)
-    pwd1.grid(padx=15, row=i, column=1, sticky="w")
+        padx=5, row=i, column=0, sticky="w", pady=20)
+    pwd1.grid(padx=200, row=i, column=0, sticky="w")
 
     name1 = Entry(root)
     i = i + 1
     Label(root, text="请输入name").grid(
-        padx=5, row=i, column=0, sticky="e", pady=20)
-    name1.grid(padx=15, row=i, column=1, sticky="w")
+        padx=5, row=i, column=0, sticky="w", pady=20)
+    name1.grid(padx=200, row=i, column=0, sticky="w")
 
     Button(root, text="提交", command=lambda: insert_teacher(id1.get(), pwd1.get(), name1.get())
-           ).grid(row=i + 1, column=0, columnspan=2, pady=40)
+           ).grid(row=i + 1, column=0, pady=20)
+    Label(root, text="如果需要删除老师，请输入tid:").grid(
+        padx=10, row=i + 2, column=0, sticky="w", pady=20)
+    _id = Entry(root)
+    _id.grid(padx=250, row=i + 2, column=0, sticky="w")
+    Button(root, text=" 删除提交 ", command=lambda: del_teacher_stu(_id.get(),"teacher")
+           ).grid(row=i + 3, column=0, pady=20, padx=50)
+
+
+
 
 #管理员给老师加课程
-
-
 def insertT_course(tid, cid):
     try:
         db = pymysql.connect(host=host,
@@ -527,7 +648,7 @@ def insertT_course(tid, cid):
                              database=dbname, )
         cur = db.cursor()
         sql = "INSERT INTO teach(tId,cId) VALUES (%s,%s)"
-        value = (tid.get(), cid.get())
+        value = (tid, cid)
         cur.execute(sql, value)
         db.commit()
         tkinter.messagebox.showinfo("successful", "插入成功")
@@ -536,18 +657,38 @@ def insertT_course(tid, cid):
         db.rollback()
     db.close()
 
+
+
+#给老师删除课程
+def teacher_drop(_cid,_tid):
+    try:
+        db=pymysql.connect( host=host,
+                            user=user,
+                            password=password,
+                            database=dbname,  )
+        cur=db.cursor()
+        sql = "delete from teach where tid='{}' AND cid ='{}'"
+        cur.execute(sql.format(_tid, _cid))
+        tkinter.messagebox.showinfo("successful", "删课成功")
+        db.commit()
+    except pymysql.Error as e:
+        tkinter.messagebox.showinfo("unsuccessful", "退课失败" + str(e))
+        db.rollback()
+    db.close()
+
+
+
 #管理员为老师加课窗口
-
-
 def chooseT_course(win):
     root = Toplevel(win)
     root.title("choose_course")
-    root.geometry("700x500")
-    Label(root, text="课程编号   课程名称   课程介绍    课程学时       课程学分      课程星期      班级编号").grid(row=0, column=0,
+    root.geometry("700x700")
+    Label(root,text="所有课程:").grid(row=0,padx=15,column=0,sticky="w")
+    Label(root, text="课程编号   课程名称   课程介绍    课程学时       课程学分      课程星期      班级编号").grid(row=1, column=0,
                                                                                        columnspan=2,
                                                                                        padx=15, pady=9)
     rels = cour1_all()
-    i = 1
+    i = 2
     for rel in rels:
         s1 = (
             "{:<14}{:<14}{:<14}{:>14}{:>14}{:>14}{:>14}".format(
@@ -555,21 +696,27 @@ def chooseT_course(win):
         Label(root, text=s1).grid(
             row=i, column=0, columnspan=2, padx=15, pady=9)
         i = i + 1
+
+
+    i= i + 1
     cid1 = Entry(root)
-    Label(root, text="请填入要插入的课程编号").grid(
-        padx=15, row=i, pady=20, column=0, sticky="e")
-    cid1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
-    i = i + 1
+    Label(root, text="请填入要插入或删除的课程编号").grid(
+        padx=15, row=i+1, pady=10, column=0, sticky="e")
+    cid1.grid(padx=15, row=i+1, column=1, pady=10, sticky="w")
     tid1 = Entry(root)
-    Label(root, text="请填入要插入的老师编号").grid(
-        padx=15, row=i, pady=20, column=0, sticky="e")
-    tid1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
-    Button(root, text="提交", command=lambda: insertT_course(
-        cid1, tid1)).grid(row=i + 1, column=0, columnspan=2)
+    Label(root, text="请填入对应的老师编号").grid(
+        padx=15, row=i+2, pady=10, column=0, sticky="e")
+    tid1.grid(padx=15, row=i+2, column=1, pady=10, sticky="w")
+    Button(root, text="添加课程请提交", command=lambda: insertT_course(
+        tid1.get(), cid1.get())).grid(row=i + 3, column=0, columnspan=2)
+
+    Button(root, text="删除课程请提交", command=lambda: teacher_drop(
+        cid1.get(), tid1.get())).grid(row=i + 4, column=0, columnspan=2,pady=40)
+
+
+
 
 #管理员增加课程
-
-
 def add_course(cid, cname, cintro, chour, ccredit, cweek, crid):
     try:
         db = pymysql.connect(host=host,
@@ -581,7 +728,7 @@ def add_course(cid, cname, cintro, chour, ccredit, cweek, crid):
         cur.execute(sql.format(cid, cname, cintro, chour, ccredit, cweek))
         #sql = "INSERT INTO teach(cId,tId) VALUES ('{}',100)"
         #cur.execute(sql.format(cid))
-        sql = "INSERT INTO classroom_arr(crId,cId,cTime) VALUES ('{}','{}','Sunday1-2 Sunday3-4')"
+        sql = "INSERT INTO classroom_arr(crId,cId,cTime) VALUES ('{}','{}','Monday Sunday')"
         cur.execute(sql.format(crid, cid))
         db.commit()
         tkinter.messagebox.showinfo("successful", "插入成功")
@@ -589,6 +736,26 @@ def add_course(cid, cname, cintro, chour, ccredit, cweek, crid):
         tkinter.messagebox.showinfo("unsuccessful", "插入失败" + str(e))
         db.rollback()
     db.close()
+
+
+#管理员删除课程
+def drop_course(_cid):
+    try:
+        db=pymysql.connect( host=host,
+                            user=user,
+                            password=password,
+                            database=dbname,  )
+        cur=db.cursor()
+        sql = "delete from courseinfo where cid='{}'"
+        cur.execute(sql.format(_cid))
+        tkinter.messagebox.showinfo("successful", "删除成功")
+        db.commit()
+    except pymysql.Error as e:
+        tkinter.messagebox.showinfo("unsuccessful", "删除失败" + str(e))
+        db.rollback()
+    db.close()
+
+
 
 #获取所有课程部分信息
 def cour1_all():
@@ -610,11 +777,12 @@ def cour1_all():
     db.close()
 
 
-#管理员增加课程窗口
-def add_Course(win):
+
+#管理员增删课程窗口
+def add_drop_Course(win):
     root = Toplevel(win)
-    root.title("add_cours")
-    root.geometry("700x700")
+    root.title("add_drop_cours")
+    root.geometry("700x900+50+50")
     Label(root, text="课程编号   课程名称   课程介绍    课程学时       课程学分      课程星期    班级编号").grid(row=0, column=0,
                                                                                      columnspan=2,
                                                                                      padx=15, pady=9)
@@ -661,12 +829,18 @@ def add_Course(win):
     Label(root, text="请填入要插入的班级编号").grid(
         padx=15, row=i, pady=10, column=0, sticky="e")
     crid1.grid(padx=15, row=i, column=1, pady=10, sticky="w")
-    Button(root, text="提交", command=lambda: add_course(cid1.get(), cname1.get(), cintro1.get(
+    Button(root, text="插入提交", command=lambda: add_course(cid1.get(), cname1.get(), cintro1.get(
     ), chour1.get(), ccredit1.get(), cweek1.get(), crid1.get())).grid(row=i + 1, column=0, columnspan=2)
+    cid2=Entry(root)
+    Label(root, text="如果要删除课程请输入课程编号：").grid(
+        padx=15, row=i+2, pady=10, column=0, sticky="e")
+    cid2.grid(padx=15, row=i+2, column=1, pady=10, sticky="w")
+    Button(root, text="删除提交", command=lambda: drop_course(cid2.get())).grid(row=i + 3, column=0, columnspan=2)
+
+
+
 
 #更新密码
-
-
 def update_sql(table, pwd1, pwd2):
     if pwd1 == "":
         tkinter.messagebox.showwarning("error", "请不要输入空值")
@@ -690,6 +864,8 @@ def update_sql(table, pwd1, pwd2):
             tkinter.messagebox.showinfo("失败", "修改失败")
             db.rollback()
         db.close()
+
+
 
 #更改密码窗口
 def change_password(win, table):
@@ -720,20 +896,21 @@ def admin_operate():
     admin_log.geometry("500x300+740+260")
     Label(admin_log, text=" Hello," + name + "\n 请选择您的操作\n", font="宋体 14",
           justify=LEFT).grid(row=0, column=0, columnspan=2, sticky='w')
-    Button(admin_log, text=" 增加学生 ", font="宋体 12", command=lambda: input_student(
+    Button(admin_log, text=" 增减学生 ", font="宋体 12", command=lambda: input_student(
         admin_log)).grid(row=1, column=0, sticky="w", padx=80)
-    Button(admin_log, text=" 增加老师 ", font="宋体 12", command=lambda: input_teacher(
+    Button(admin_log, text=" 增减老师 ", font="宋体 12", command=lambda: input_teacher(
         admin_log)).grid(row=1, column=1, sticky="e", padx=0)
-    Button(admin_log, text="给老师加课", font="宋体 12", command=lambda: chooseT_course(
+    Button(admin_log, text=" 老师增减课 ", font="宋体 12", command=lambda: chooseT_course(
         admin_log)).grid(row=4, column=0, sticky="w", padx=80, pady=20)
     Button(admin_log, text=" 修改密码 ", font="宋体 12", command=lambda: change_password(
         admin_log, "adminpwd")).grid(row=4, column=1, sticky="e", padx=0, pady=20)
-    Button(admin_log, text=" 增加课程 ", font="宋体 12", command=lambda: add_Course(
+    Button(admin_log, text=" 增删课程 ", font="宋体 12", command=lambda: add_drop_Course(
         admin_log)).grid(row=5, column=0, sticky="w", padx=80, pady=10)
 
+
+
+
 #教师操作台
-
-
 def teacher_operate():
     teacher_log = Tk()
     teacher_log.title("老师操作台")
@@ -749,9 +926,10 @@ def teacher_operate():
     Button(teacher_log, text=" 修改信息 ", font="宋体 12", relief="solid",
            command=lambda: updateT_it(teacher_log)).grid(row=2, column=0, pady=40)
 
+
+
+
 #学生操作台
-
-
 def stu_operate():
     stu_log = Tk()
     stu_log.title("学生操作台")
@@ -772,9 +950,9 @@ def stu_operate():
                                                                                                         column=0,
                                                                                                         pady=40)
 
+
+
 #验证用户登录的用户名与密码
-
-
 def check_pwd(s1, s2, DB):
     global name
     global uid
@@ -796,9 +974,10 @@ def check_pwd(s1, s2, DB):
         print("数据查询失败" + str(e))
     db.close()
 
+
+
+
 #根据不同登陆类型打开相应操作界面
-
-
 def checkInfo(kind, e1, e2, w1):
     Id = e1.get()
     pwd = e2.get()
@@ -827,9 +1006,9 @@ def checkInfo(kind, e1, e2, w1):
             messagebox.showerror(
                 "error", "password is not right,please input again")
 
+
+
 #登陆窗口
-
-
 def login(str, win):
     #win.destroy()              #窗口不关闭
     log_in = Tk()
