@@ -63,7 +63,7 @@ def person_info():
 def update_it(win):
     root = Toplevel(win)
     root.title("change_info")
-    root.geometry("600x400+190+190")
+    root.geometry("700x400+190+190")
     Label(root, text="{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}\n"
                      "{:<16}{:<16}{:<16}{:<16}{:<16}{:<16}".format(
         "学生编号", "专业", "姓名", "学院", "性别", "出生日期",
@@ -156,7 +156,7 @@ def cour_all():
 def choose_course(win):
     root = Toplevel(win)
     root.title("choose_course")
-    root.geometry("800x800")
+    root.geometry("900x800")
     Label(root, text="课程编号    课程名称    课程介绍    课程学时    课程学分    课程星期    老师姓名    老师编号   教室号").grid(row=0, column=0,
                                                                                          columnspan=2,
                                                                                          padx=15, pady=9)
@@ -239,7 +239,7 @@ def get_ID(type):
 def stu_course(win):
     root = Toplevel(win)
     root.title("stu_course")
-    root.geometry("800x800")
+    root.geometry("1000x800")
     Label(root, text="学生学号   学生姓名     课程id     课程名称     课程介绍      课程学时    课程学分    课程星期      老师姓名     老师编号").pack(padx=15, pady=14,
                                                                                                     anchor="nw")
     rels = chaKe()
@@ -306,7 +306,7 @@ def personT_info():
 def updateT_it(win):
     root = Toplevel(win)
     root.title("change_info")
-    root.geometry("700x400+190+190")
+    root.geometry("800x400+190+190")
     Label(root, text="{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}\n"
                      "{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}".format(
         "教师编号", "教师名称", "毕业院校", "职称", "学历", "出生日期", "性别",
